@@ -2,11 +2,12 @@
 \alias{regs.vol.sm}
 
 \title{
-Creates the regressors of the log-volatility specification of a SEARCH model
+Creates the regressors of the log-volatility specification
 }
 \description{
-Creates the regressors of the log-volatility specification of a SEARCH model
+Creates the regressors of the log-volatility specification
 }
+
 \usage{
 regs.vol.sm(e, vc=TRUE, arch=NULL, asym=NULL, log.ewma=NULL, vx=NULL, p=2,
   zero.adj=0.1)
@@ -48,23 +49,17 @@ numeric value between 0 and 1. The quantile adjustment for zero values.
 The default 0.1 means that the zero residuals are replaced by means of
 the 10 percent quantile of the absolute residuals before taking the
 logarithm
+  }
 }
-}
-\details{
-}
+
 \value{
 Matrix with regressors
 }
-\references{
-}
+
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
 }
-\note{
-}
+
 \seealso{
 regs.mean.sm
 }
-\examples{
-}
-\keyword{}

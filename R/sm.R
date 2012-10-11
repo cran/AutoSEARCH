@@ -1,11 +1,13 @@
 sm <-
-function(y, mc=NULL, ar=NULL, mx=NULL, arch=NULL,
+function(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL, arch=NULL,
   asym=NULL, log.ewma=NULL, vx=NULL, p=2, zero.adj=0.1,
   vc.adj=TRUE, varcov.mat=c("ordinary", "white"),
   qstat.options=NULL, tol=1e-07, LAPACK=FALSE, verbose=TRUE,
   smpl=NULL)
 {
 ### ARGUMENTS ###########
+
+varcov.mat <- match.arg(varcov.mat)
 
 #check:
 if(NCOL(y)!=1) stop("Regressand must be a vector")
@@ -42,8 +44,6 @@ if(!is.null(vx)){
   vx <- cbind(coredata(vx))
 }
 
-varcov.mat <- match.arg(varcov.mat)
-
 ### INITIALISE ##########
 
 out <- list()
@@ -51,8 +51,9 @@ out$call <- sys.call()
 warnings <- NULL
 
 ##regressors:
-mX <- regs.mean.sm(y, mc=mc, ar=ar, mx=mx)
-max.ar <- if(is.null(ar)){0}else{max(ar)}
+mX <- regs.mean.sm(y, mc=mc, ar=ar, ewma=ewma, mx=mx)
+ewma.mean.chk <- if(is.null(ewma)){0}else{ifelse(is.null(ewma$lag),1,ewma$lag)}
+max.ar <- if( is.null(ar)&&is.null(ewma) ){0}else{ max(ar,ewma.mean.chk) }
 vYadj <- y[I(max.ar+1):y.n]
 if(!is.null(mX)){mXadj <- cbind(mX[I(max.ar+1):y.n,])}
 
@@ -108,11 +109,12 @@ if(is.null(vx)){
 }
 
 #estimate:
-
 vX <- regs.vol.sm(resids, vc=TRUE, arch=arch, asym=asym,
   log.ewma=log.ewma, vx=vx, p=p, zero.adj=zero.adj)
-ewma.chk <- if(is.null(log.ewma)){0}else{1}
-pstar <- max(arch, asym, ewma.chk)
+ewma.vol.chk <- if(is.null(log.ewma)){0}else{
+  ifelse(is.null(log.ewma$lag), 1, log.ewma$lag)
+}
+pstar <- max(arch, asym, ewma.vol.chk)
 logepadj <- as.vector(vX[I(pstar+1):e.n, 1])
 vXadj <- cbind(vX[I(pstar+1):e.n, -1])
 est.v <- ols.fit2(logepadj, vXadj, tol=tol, LAPACK=LAPACK)
@@ -155,15 +157,15 @@ rownames(variance.results) <- colnames(vX)[-1]
 ### DIAGNOSTICS #################
 
 if(verbose){
-#  diagnostics <- matrix(NA, 5, 3)
-  diagnostics <- matrix(NA, 4, 3)
+  diagnostics <- matrix(NA, 5, 3)
+#  diagnostics <- matrix(NA, 4, 3)
   colnames(diagnostics) <- c("Chi^2", "df", "p-val")
 #  rownames(diagnostics) <- c(paste("Ljung-Box AR(", qstat.options[1], ")", sep=""),
 #    paste("Ljung-Box ARCH(", qstat.options[2], ")", sep=""),
 #    "Skewness", "JB-test", "R-squared")
   rownames(diagnostics) <- c(paste("Ljung-Box AR(", qstat.options[1], ")", sep=""),
     paste("Ljung-Box ARCH(", qstat.options[2], ")", sep=""),
-    "Skewness", "JB-test")
+    "Skewness", "JB-test", "R-squared")
   ar.LjungBox <- Box.test(resids.std, lag = qstat.options[1], type="L")
   diagnostics[1,1] <- ar.LjungBox$statistic
   diagnostics[1,2] <- qstat.options[1]
@@ -182,10 +184,13 @@ if(verbose){
   diagnostics[4,3] <- normality.test$p.value
 
   ##R-squared:
+  TSS <- sum( (vYadj - mean(vYadj))^2 )
+  RSS <- sum( (resids - mean(resids))^2 )
+  Rsquared <- 1 - RSS/TSS
 #  ybar <- mean(vYadj)
 #  SSE <- sum(resids^2)
 #  Rsquared <- 1 - SSE/sum((vYadj-ybar)^2)
-#  diagnostics[5,1] <- Rsquared
+  diagnostics[5,1] <- Rsquared
 }
 
 ### OUTPUT ######################
@@ -226,6 +231,4 @@ if(verbose){
 out$warnings <- warnings
 
 return(out)
-
-} #end sm
-
+}

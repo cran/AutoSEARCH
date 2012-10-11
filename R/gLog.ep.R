@@ -2,7 +2,7 @@ gLog.ep <-
 function(e, zero.adj=0.1, p=2, na.replace=NA)
 {
 #check:
-if(p<=0) stop("Power must be greater than zero")
+if(p <= 0) stop("Power must be greater than zero")
 
 if(is.zoo(e)){
   zoo.chk <- TRUE
@@ -34,5 +34,4 @@ if(zoo.chk){
 }
 
 return(logep)
-} #end gLog.ep
-
+}

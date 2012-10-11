@@ -22,23 +22,13 @@ integer, the number of parameters
 }
   \item{method}{
 "sc", "aic", "aicc" or "hq"
+  }
 }
-}
-\details{
-}
+
 \value{
 numeric, the value of the information criterion
 }
-\references{
-}
+
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
 }
-\note{
-}
-
-\seealso{
-}
-\examples{
-}
-\keyword{}

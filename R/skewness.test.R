@@ -14,5 +14,4 @@ out$p.value <- pchisq(statistic, 1, lower.tail=FALSE)
 
 return(out)
 
-} #end skewness.test
-
+}

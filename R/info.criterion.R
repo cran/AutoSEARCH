@@ -35,5 +35,4 @@ out$value <- info.val
 
 return(out)
 
-} #end info.criterion
-
+}

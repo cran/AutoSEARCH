@@ -107,5 +107,4 @@ function(x, method = c("inverse", "direct"))
     }
     pp <- pz
     pp
-} ##end gedestp
-
+}

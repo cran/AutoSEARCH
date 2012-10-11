@@ -8,30 +8,35 @@ General-to-Specific (GETS) model selection of the mean specification
 The starting model is referred to as the General Unrestricted Model (GUM), and may contain both a mean specification and a log-volatility specification. However, simplification is undertaken only with respect to the former. The diagnostic tests are optionally undertaken either on the residuals of the mean specification or on the standardised residuals. The latter might be desirable if a log-volatility specification is specified.
 }
 \usage{
-gets.mean(y, mc=NULL, ar=NULL, mx=NULL, arch=NULL,
-  asym=NULL, log.ewma=NULL, vx=NULL, keep=NULL, p=2,
-  varcov.mat=c("ordinary", "white"), t.pval=0.05,
-  do.pet=TRUE, wald.pval=0.05, ar.LjungB=c(2, 0.025),
-  arch.LjungB=c(2, 0.025), tau=2, info.method=c("sc", "aic", "hq"),
-  info.resids=c("mean", "standardised"), include.empty=FALSE,
-  zero.adj=0.1, vc.adj=TRUE, tol=1e-07, LAPACK=FALSE,
-  max.regs=1000, verbose=TRUE, smpl=NULL)
+gets.mean(y, mc = NULL, ar = NULL, ewma = NULL, mx = NULL,
+  arch = NULL, asym = NULL, log.ewma = NULL, vx = NULL,
+  keep = NULL, p = 2, varcov.mat = c("ordinary", "white"),
+  t.pval = 0.05, do.pet = TRUE, wald.pval = 0.05,
+  ar.LjungB = c(2, 0.025), arch.LjungB = c(2, 0.025),
+  tau = 2, info.method = c("sc", "aic", "hq"),
+  info.resids = c("mean", "standardised"),
+  include.empty = FALSE, zero.adj = 0.1, vc.adj = TRUE,
+  tol = 1e-07, LAPACK = FALSE, max.regs = 1000,
+  verbose = TRUE, smpl = NULL, alarm = FALSE)
 }
-\arguments{                
+\arguments{
   \item{y}{
 numeric vector, time-series or zoo object. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
 }
   \item{mc}{
-logical, TRUE or FALSE (default). TRUE includes intercept in the specification, FALSE does not
+logical, TRUE or FALSE (default). TRUE includes intercept in the mean specification, FALSE does not
 }
   \item{ar}{
 integer vector, say, c(2,4) or 1:4. The AR-lags to include in the specification
+}
+  \item{ewma}{
+either NULL (default) or a list with arguments sent to the eqwma function. In the latter case a lagged moving average of y is included as a regressor
 }
   \item{mx}{
 numeric matrix, time-series or zoo object of conditioning covariates. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
 }
   \item{arch}{
-integer vector, say, c(1,3) or 2:5. The ARCH-lags to include in the log-volatility specification
+integer vector, say, c(1,3) or 2:5. The log-ARCH terms to include in the log-volatility specification
 }
   \item{asym}{
 integer vector, say, c(1) or 1:3. The asymmetry or leverage terms to include in the log-volatility specification
@@ -43,8 +48,8 @@ NULL (default) or a list. If NULL then log(EWMA) is not included as volatility p
 numeric matrix, time-series or zoo object of conditioning covariates. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
 }
   \item{keep}{
-NULL (default) or an integer vector. If keep = NULL, then no regressors are excluded from removal. Otherwise, the regressors associated with the numbers in keep are excluded from the removal space. For example, keep=c(1) excludes the constant from removal. The regressor numbering is contained in the reg.no column of the gum.mean data frame, see below
-}       
+NULL (default) or an integer vector. If keep = NULL, then no regressors are excluded from removal. Otherwise, the regressors associated with the numbers in keep are excluded from the removal space. For example, keep=c(1) excludes the constant from removal. The regressor numbering is contained in the reg.no column of the gum.mean data frame (see below)
+}
   \item{p}{
 numeric value greater than zero. The power of the log-volatility specification.
 }
@@ -52,7 +57,7 @@ numeric value greater than zero. The power of the log-volatility specification.
 character vector, "ordinary" or "white". If "ordinary" then the ordinary variance-covariance matrix is used for inference. Otherwise the White (1980) heteroscedasticity robust matrix is used
 }
   \item{t.pval}{
-numeric value between 0 and 1. The significance level used for the regressor tests
+numeric value between 0 and 1. The significance level used for the two-sided regressor significance tests
 }
   \item{do.pet}{
 logical, TRUE (default) or FALSE. If TRUE then a Parsimonious Encompassing Test (PET) against the GUM is undertaken at each regressor removal for the joint significance of all the deleted regressors along the current path
@@ -99,10 +104,13 @@ logical, TRUE (default) or FALSE. FALSE returns less output and is therefore fas
   \item{smpl}{
 Either NULL (default; the whole sample is used for estimation) or a two-element vector of dates with the start and end dates of the sample to be used in estimation. For example, smpl=c("2001-01-01", "2009-12-31")
 }
+  \item{alarm}{
+Logical, either TRUE or FALSE (default). If TRUE, then a sound or beep is emitted when the specification search terminates in order to alert the user
+}
 }
 
 \details{
-See Sucarrat and Escribano (2011)
+See Sucarrat and Escribano (2012)
 }
 
 \value{
@@ -123,24 +131,23 @@ Returns a list with the following elements:
 }
 
 \references{
-Genaro Sucarrat and Alvaro Escribano: 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility Specifications', forthcoming in the Oxford Bulletin of Economics and Statistics
-
-Genaro Sucarrat and Alvaro Escribano: 'The Power Log-GARCH Model', working paper
+Genaro Sucarrat and Alvaro Escribano (2012): 'Automated Financial
+  Model Selection: General-to-Specific Modelling of the Mean and
+  Volatility Specifications', Oxford Bulletin of Economics and
+  Statistics 74, Issue no. 5 (October), pp. 716-735
 
 G. Ljung and G. Box (1979): 'On a Measure of Lack of Fit in Time
-Series Models'. Biometrika 66, pp. 265-270
+  Series Models'. Biometrika 66, pp. 265-270
 }
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
-}
-\note{
 }
 
 \seealso{
 sm, gets.vol, ewma
 }
 \examples{
-#Generate AR(1) model and independent normal regressors:
+#Generate AR(1) model and four independent normal regressors:
 set.seed(123)
 y <- arima.sim(list(ar=0.4), 200)
 xregs <- matrix(rnorm(4*200), 200, 4)
@@ -154,19 +161,19 @@ mymodel <- gets.mean(y, mc=TRUE, ar=1:5, mx=xregs, keep=1)
 
 #General-to-Specific model selection of the mean
 #with no intercept and with a log-ARCH(4) specification
-#in the log-volatility:
-mymodel <- gets.mean(y, mc=TRUE, ar=1:5, mx=xregs, arch=1:4,
+#in the log-volatility using the standardised residuals
+#when computing the log-likelihood for the information
+#criterion:
+mymodel <- gets.mean(y, mc=FALSE, ar=1:5, mx=xregs, arch=1:4,
   info.resids="standardised")
 
 #General-to-Specific model selection of the mean with
-#non-default diagnostics settings:
+#non-default serial-correlation diagnostics settings:
 mymodel <- gets.mean(y, mc=TRUE, ar=1:5, mx=xregs,
   ar.LjungB=c(6, 0.05))
 
 #General-to-Specific model selection of the mean with
-#(very) liberal significance levels:
+#very liberal (i.e. 20 percent) significance levels (20 percent):
 mymodel <- gets.mean(y, mc=TRUE, ar=1:5, mx=xregs, t.pval=0.2,
   wald.pval=0.2)
 }
-
-\keyword{}

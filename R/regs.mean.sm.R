@@ -1,5 +1,5 @@
 regs.mean.sm <-
-function(y, mc=NULL, ar=NULL, mx=NULL)
+function(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL)
 {
 y.n <- length(y)
 mX <- NULL
@@ -16,6 +16,12 @@ if(!is.null(ar)){
   colnames(arlags) <- paste("ar", ar, sep="")
 }
 mX <- cbind(mX, arlags)
+
+#EqWMA term:
+if(is.null(ewma)){EqWMA <- NULL}else{
+  EqWMA <- do.call(eqwma, c(list(y),ewma) )
+}
+mX <- cbind(mX, EqWMA)
 
 #create matrix of mean regressors mx:
 if(!is.null(mx)){
@@ -38,5 +44,4 @@ out <- mX
 
 return(out)
 
-} #end regs.mean.sm
-
+}

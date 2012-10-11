@@ -25,10 +25,9 @@ Only used if LAPACK is FALSE
   \item{LAPACK}{
 logical, TRUE or FALSE (default). If true use LAPACK otherwise use
 LINPACK (see qr() function)
+  }
 }
-}
-\details{
-}
+
 \value{
 Returns a list with the following elements:
   \item{qr}{}
@@ -37,16 +36,11 @@ Returns a list with the following elements:
   \item{pivot}{}
   \item{coefficients}{}
 }
-\references{
-}
+
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
 }
-\note{
-}
+
 \seealso{
 ols.fit2, qr, solve
 }
-\examples{
-}
-\keyword{}

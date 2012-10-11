@@ -7,5 +7,4 @@ out <- c(out, qx)
 out$coefficients <- as.vector(solve.qr(qx, y, tol = tol))
 
 return(out)
-} #end ols.fit1
-
+}

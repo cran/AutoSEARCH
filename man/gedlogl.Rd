@@ -16,28 +16,23 @@ numeric vector
 }
   \item{p}{
 numeric value, the shape parameter
+  }
 }
-}
-\details{
-}
+
 \value{
 numeric, the value of the log-likelihood
 }
-\references{
-}
+
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
-}
-\note{
 }
 
 \seealso{
 gedestp
 }
 \examples{
-#log-likelihood of a Gaussian series:
+#Log-likelihood of a Gaussian series:
 set.seed(123)
 x <- rnorm(200)
 gedlogl(x, p=2)
 }
-\keyword{}

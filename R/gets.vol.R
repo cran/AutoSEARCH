@@ -4,7 +4,8 @@ function(e, arch=NULL, asym=NULL, log.ewma=NULL, vx=NULL,
   ar.LjungB=c(1, 0.025), arch.LjungB=c(1, 0.025), tau=2,
   info.method=c("sc", "aic", "hq"), info.resids=c("standardised",
   "log-sigma"), include.empty=FALSE, zero.adj=0.1, vc.adj=TRUE,
-  tol=1e-07, LAPACK=FALSE, max.regs=1000, verbose=TRUE, smpl=NULL)
+  tol=1e-07, LAPACK=FALSE, max.regs=1000, verbose=TRUE, alarm=FALSE,
+  smpl=NULL)
 {
 ### ARGUMENTS ###########
 
@@ -110,7 +111,7 @@ sigma2adj <- exp(fit + vconstadj)
 zhat <- eadj/sqrt(sigma2adj)
 
 #make diagnostics table:
-if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
+#if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
   if(verbose == TRUE){
     diagnostics <- matrix(NA, 2, 2)
     colnames(diagnostics) <- c("stat", "p-val")
@@ -118,7 +119,7 @@ if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
       ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
       sep=""))
   }
-}
+#}
 
 #Ljung-Box test for serial correlation in {z_t}:
 if(!is.null(ar.LjungB)){
@@ -304,6 +305,12 @@ if( ar.gum.chk*arch.gum.chk!=0 && delete.n>1 ){
 
     #paths:
     for(i in 1:n.paths){
+    
+      #print path if verbose:
+      if(verbose){
+        print(paste("Searching path no. ", i, " out of ", n.paths, sep=""),
+        quote=FALSE)
+      }
 
       #prepare single-path search:
       path <- insig.regs[i]
@@ -675,7 +682,8 @@ if(length(warnings) > 0){
   out$warnings <- warnings
 }
 
+if(alarm){alarm()}
+
 return(out)
 
-} #end gets.vol
-
+}

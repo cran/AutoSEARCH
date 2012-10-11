@@ -14,8 +14,7 @@ mX <- cbind(mX,vconst)
 
 #create exponential arch terms:
 archlags <- NULL
-if(is.null(arch)){archadj<-NULL;s2<-1}else
-  {
+if(is.null(arch)){ archadj<-NULL ; s2<-1 }else{
   archadj <- setdiff(round(abs(arch)),0)
   for(i in 1:length(archadj))
     {
@@ -23,7 +22,7 @@ if(is.null(arch)){archadj<-NULL;s2<-1}else
     }
   colnames(archlags) <- paste(c("arch"),archadj,sep="")
   s2 <- I(max(archadj)+1)
-  }
+}
 mX <- cbind(mX, archlags)
 
 #create asymmetry terms:
@@ -42,8 +41,7 @@ mX <- cbind(mX, asymlags)
 
 #create log-EWMA term:
 if(is.null(log.ewma)){logEWMA <- NULL}else{
-  EWMA <- do.call(ewma, c(list(e), log.ewma))
-  logEWMA <- log(EWMA)
+  logEWMA <- do.call(leqwma, c(list(e),log.ewma) )
 }
 mX <- cbind(mX, logEWMA)
 
@@ -69,5 +67,4 @@ mX <- cbind(mX, vX)
 out <- mX
 return(out)
 
-} #end regs.vol.sm
-
+}

@@ -7,8 +7,9 @@ Creates the regressors of the mean specification of a SEARCH model
 \description{
 Creates the regressors of the mean specification of a SEARCH model
 }
+
 \usage{
-regs.mean.sm(y, mc=NULL, ar=NULL, mx=NULL)
+regs.mean.sm(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL)
 }
 \arguments{
   \item{y}{
@@ -24,28 +25,25 @@ specification, FALSE does not
 integer vector, say, c(2,4) or 1:4. The AR-lags to include in the
 specification
 }
+  \item{ewma}{
+NULL or a list of arguments sent to the eqwma function
+}
   \item{mx}{
 numeric matrix, time-series or zoo object of conditioning covariates.
 Note that missing values in the beginning or at the end of the series
 is allowed, as they are removed with the na.trim command from the zoo
 package
+  }
 }
-}
-\details{
-}
+
 \value{
 Matrix with regressors
 }
-\references{
-}
+
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
 }
-\note{
-}
+
 \seealso{
 regs.vol.sm
 }
-\examples{
-}
-\keyword{}

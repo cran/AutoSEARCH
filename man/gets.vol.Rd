@@ -4,17 +4,19 @@
 \title{
 General-to-Specific (GETS) model selection of a log-volatility specification
 }
+
 \description{
 The starting model is referred to as the General Unrestricted Model (GUM) log-volatility specification, and takes the residuals from a mean specification as its modelling objective. But the modelling or model selection is undertaken in terms of the log-volatility specification. The diagnostic tests are undertaken on the standardised residuals (this is not optional)
 }
+
 \usage{
 gets.vol(e, arch=NULL, asym=NULL, log.ewma=NULL, vx=NULL,
   p=2, keep=c(1), t.pval=0.05, wald.pval=0.05, do.pet=TRUE,
   ar.LjungB=c(1, 0.025), arch.LjungB=c(1, 0.025), tau=2,
   info.method=c("sc", "aic", "hq"),
-  info.resids=c("standardised", "log-sigma"),
-  include.empty=FALSE, zero.adj=0.1, vc.adj=TRUE, tol=1e-07,
-  LAPACK=FALSE, max.regs=1000, verbose=TRUE, smpl=NULL)
+  info.resids=c("standardised", "log-sigma"), include.empty=FALSE,
+  zero.adj=0.1, vc.adj=TRUE, tol=1e-07, LAPACK=FALSE, max.regs=1000,
+  verbose=TRUE, alarm=FALSE, smpl=NULL)
 }
 \arguments{
   \item{e}{
@@ -27,7 +29,7 @@ integer vector, say, c(1,3) or 2:5. The ARCH-lags to include in the log-volatili
 integer vector, say, c(1) or 1:3. The asymmetry or leverage terms to include in the log-volatility specification
 }
   \item{log.ewma}{
-NULL (default) or a list. If NULL then log(EWMA) is not included as volatility proxy. If a list, then log(EWMA) is included as a volatility proxy.
+NULL (default) or a list. If NULL then log(EqWMA) is not included as volatility proxy. If a list, then log(EWMA) is included as a volatility proxy.
 }
   \item{vx}{
 numeric matrix, time-series or zoo object of conditioning covariates. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
@@ -37,7 +39,7 @@ numeric value greater than zero. The power of the log-volatility specification.
 }
   \item{keep}{
 NULL (default) or an integer vector. If keep = NULL, then no regressors are excluded from removal. Otherwise, the regressors associated with the numbers in keep are excluded from the removal space. For example, keep=c(1) excludes the constant from removal. The regressor numbering is contained in the reg.no column of the gum.mean data frame, see below
-}       
+}
   \item{t.pval}{
 numeric value between 0 and 1. The significance level used for the regressor tests
 }
@@ -83,13 +85,16 @@ integer value, sets the maximum number of regressions along a deletion path. Def
   \item{verbose}{
 logical, TRUE (default) or FALSE. FALSE returns less output and is therefore faster
 }
+  \item{alarm}{
+Logical, either TRUE or FALSE (default). If TRUE, then a sound or beep is emitted when the specification search terminates in order to alert the user
+}
   \item{smpl}{
 Either NULL (default; the whole sample is used for estimation) or a two-element vector of dates with the start and end dates of the sample to be used in estimation. For example, smpl=c("2001-01-01", "2009-12-31")
 }
 }
 
 \details{
-See Sucarrat and Escribano (2011)
+See Sucarrat and Escribano (2012)
 }
 \value{
 Returns a list with the following elements:
@@ -110,20 +115,21 @@ Returns a list with the following elements:
 }
 
 \references{
-Genaro Sucarrat and Alvaro Escribano: 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility Specifications', forthcoming in the Oxford Bulletin of Economics and Statistics
+Genaro Sucarrat and Alvaro Escribano (2012): 'Automated Financial
+  Model Selection: General-to-Specific Modelling of the Mean and
+  Volatility Specifications', Oxford Bulletin of Economics and
+  Statistics 74, Issue no. 5 (October), pp. 716-735
 
-Genaro Sucarrat and Alvaro Escribano: 'The Power Log-GARCH Model', working paper
-
-G. Ljung and G. Box (1979): 'On a Measure of Lack of Fit in Time Series Models'. Biometrika 66, pp. 265-270
+G. Ljung and G. Box (1979): 'On a Measure of Lack of Fit in Time
+  Series Models'. Biometrika 66, pp. 265-270
 }
+
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
 }
-\note{
-}
 
 \seealso{
-sm, gets.mean, ewma
+sm, gets.mean, eqwma
 }
 \examples{
 #Generate iid normal residuals and a matrix of independent
@@ -142,11 +148,17 @@ mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2), keep=2)
 #General-to-Specific model selection of log-volatility
 #with all the log-ARCH terms excluded from removal:
 mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2), asym=1:2,
-  keep=2:6, log.ewma=list(length=5))
+  log.ewma=list(length=5), keep=2:6)
 
-#General-to-Specific model selection with (very) liberal
-#significance levels:
+#If e is a daily (weekends excluded) financial return series,
+#then the following specification includes a lagged volatility
+#proxy both for the week (5-day average of squared return) and
+#for the month (20-day average of squared returns), in addition
+#to five log-ARCH terms:
+mymodel <- gets.vol(e, arch=1:5, log.ewma=list(length=c(5,20)) )
+
+#General-to-Specific model selection with very liberal
+#(20 percent) significance levels:
 mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2), t.pval=0.2,
   wald.pval=0.2)
 }
-\keyword{}

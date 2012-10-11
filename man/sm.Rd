@@ -2,13 +2,13 @@
 \alias{sm}
 
 \title{
-Estimates a SEARCH model
+Estimates a SEARCH model, that is, a model with an AR-X mean specification and a log-ARCH-X log-volatility specification
 }
 \description{
-Estimates a SEARCH model by means of OLS. Estimation takes place in two steps. First the mean specification, then the log-volatility specification where the natural logarithm of the residuals constitutes the regressand. The mean specification can contain an intercept, AR-terms and other conditioning covariates. The log-volatility specification can contain log-ARCH terms, asymmetry or 'leverage' terms, log(EWMA) where EWMA is an equally weighted moving average of past pth. exponentiated residuals (a volatility proxy) and other conditioning covariates.
+Estimates a SEARCH model by means of OLS. Estimation takes place in two steps. First the mean specification, then the log-volatility specification where the natural logarithm of the residuals constitutes the regressand. The mean specification can contain an intercept, AR-terms, lagged moving averages of the regressand and other conditioning covariates. The log-volatility specification can contain log-ARCH terms, asymmetry or 'leverage' terms, log(EqWMA) where EqWMA is a lagged equally weighted moving average of past pth. exponentiated residuals (a volatility proxy) and other conditioning covariates.
 }
 \usage{
-sm(y, mc=NULL, ar=NULL, mx=NULL, arch=NULL, asym=NULL,
+sm(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL, arch=NULL, asym=NULL,
   log.ewma=NULL, vx=NULL, p=2, zero.adj=0.1, vc.adj=TRUE,
   varcov.mat=c("ordinary", "white"), qstat.options=NULL,
   tol=1e-07, LAPACK=FALSE, verbose=TRUE, smpl=NULL)
@@ -22,6 +22,9 @@ logical, TRUE or FALSE (default). TRUE includes intercept in the specification, 
 }
   \item{ar}{
 integer vector, say, c(2,4) or 1:4. The AR-lags to include in the specification
+}
+  \item{ewma}{
+list of arguments sent to the leqwma function
 }
   \item{mx}{
 numeric matrix, time-series or zoo object of conditioning covariates. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
@@ -68,7 +71,7 @@ Either NULL (default; the whole sample is used for estimation) or a two-element 
 }
 
 \details{
-See Sucarrat and Escribano (2011)
+See Sucarrat and Escribano (2012)
 }
 \value{
 Returns a list with the following elements:
@@ -78,22 +81,18 @@ Returns a list with the following elements:
   \item{volatility.fit}{zoo-object with the fitted values of the volatility (sigma^p) specification}
   \item{resids.ustar}{zoo-object with the residuals of the AR-representation of the log-volatility specification}
   \item{resids.std}{zoo-object with the standardised residuals}
-  \item{Elogzp}{estimate of E[log(z^p)]}
+  \item{Elogzp}{estimate of E(log(z^p))}
   \item{mean.results}{data frame with the estimation results of the mean specification}
   \item{volatility.results}{data frame with the estimation results of the log-volatility specification}
   \item{diagnostics}{data frame with selected diagnostics of the standardised residuals}
 }
 \references{
-Genaro Sucarrat and Alvaro Escribano: 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility Specifications', forthcoming in the Oxford Bulletin of Economics and Statistics
-
-Genaro Sucarrat and Alvaro Escribano: 'The Power Log-GARCH Model', working paper
+Genaro Sucarrat and Alvaro Escribano (2012): 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility Specifications', Oxford Bulletin of Economics and Statistics 74, Issue no. 5 (October), pp. 716-735
 
 Halbert White (1980): 'A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity', Econometrica 48, pp. 817-838
 }
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
-}
-\note{
 }
 
 \seealso{
@@ -134,4 +133,3 @@ sm(y, arch=1:4, asym=1, log.ewma=list(length=30), vx=log(xregs^2))
 sm(y, mc=TRUE, ar=1:2, mx=xregs, arch=1:4, asym=1,
   log.ewma=list(length=30), vx=log(xregs^2))
 }
-\keyword{}

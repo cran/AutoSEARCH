@@ -1,15 +1,21 @@
 gets.mean <-
-function(y, mc=NULL, ar=NULL, mx=NULL, arch=NULL, asym=NULL,
-  log.ewma=NULL, vx=NULL, keep=NULL, p=2, varcov.mat=c("ordinary", "white"),
-  t.pval=0.05, do.pet=TRUE, wald.pval=0.05, ar.LjungB=c(2,0.025),
-  arch.LjungB=c(2,0.025), tau=2, info.method=c("sc", "aic", "hq"),
+function(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL,
+  arch=NULL, asym=NULL, log.ewma=NULL, vx=NULL, keep=NULL, p=2,
+  varcov.mat=c("ordinary", "white"), t.pval=0.05, do.pet=TRUE,
+  wald.pval=0.05, ar.LjungB=c(2,0.025), arch.LjungB=c(2,0.025),
+  tau=2, info.method=c("sc", "aic", "hq"),
   info.resids=c("mean", "standardised"), include.empty=FALSE,
   zero.adj=0.1, vc.adj=TRUE, tol=1e-07, LAPACK=FALSE, max.regs=1000,
-  verbose=TRUE, smpl=NULL)
+  verbose=TRUE, smpl=NULL, alarm=FALSE)
 {
 ### ARGUMENTS ###########
 
 keep.groups=NULL
+
+#match arguments:
+info.method <- match.arg(info.method)
+info.resids <- match.arg(info.resids)
+varcov.mat <- match.arg(varcov.mat)
 
 ##zoo:
 y <- as.zoo(y)
@@ -38,13 +44,6 @@ if(!is.null(vx)){
   vx <- cbind(coredata(vx))
 }
 
-#information criterion and resids:
-info.method <- match.arg(info.method)
-info.resids <- match.arg(info.resids)
-
-#variance-covariance matrix:
-varcov.mat="ordinary"
-
 ### INITIALISE ##########
 
 out <- list()
@@ -61,8 +60,10 @@ if(!is.null(arch) || !is.null(asym) || !is.null(log.ewma) || !is.null(vx)){
 ## GUM ############################################
 
 ##mean regressors:
-max.ar <- if(is.null(ar)){0}else{max(ar)}
-mXunadj <- regs.mean.sm(y, mc=mc, ar=ar, mx=mx)
+ewma.mean.chk <- if(is.null(ewma)){0}else{ifelse(is.null(ewma$lag),1,ewma$lag)}
+max.ar <- if( is.null(ar)&&is.null(ewma) ){0}else{ max(ar,ewma.mean.chk) }
+#max.ar <- if(is.null(ar)){0}else{max(ar)}
+mXunadj <- regs.mean.sm(y, mc=mc, ar=ar, ewma=ewma, mx=mx)
 y.n <- length(y)
 if(is.null(mXunadj)){
   stop("Mean equation empty")
@@ -120,16 +121,16 @@ if(var.spec.chk){
     vx <- cbind(vx[I(yadj.n-resids.n+1):yadj.n,])
     colnames(vx) <- vx.names
   }
-  est.var <- sm(resids, mc=NULL, arch=arch, asym=asym, log.ewma=log.ewma,
-    vx=vx, p=p, zero.adj=zero.adj, vc.adj=vc.adj, tol=tol,
-    LAPACK=LAPACK, verbose=FALSE)
-    zhat <- coredata(na.trim(est.var$resids.std))
+  est.var <- sm(resids, mc=NULL, arch=arch, asym=asym,
+    log.ewma=log.ewma, vx=vx, p=p, zero.adj=zero.adj,
+    vc.adj=vc.adj, tol=tol, LAPACK=LAPACK, verbose=FALSE)
+  zhat <- coredata(na.trim(est.var$resids.std))
 }else{
   zhat <- resids/sqrt(sigma2)
 }
 
 #make diagnostics table:
-if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
+#if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
   if(verbose == TRUE){
     diagnostics <- matrix(NA, 2, 3)
     colnames(diagnostics) <- c("Chi^2", "df", "p-val")
@@ -137,7 +138,7 @@ if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
       ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
       sep=""))
   }
-}
+#}
 
 #Ljung-Box test for serial correlation in {z_t}:
 if(!is.null(ar.LjungB)){
@@ -333,6 +334,12 @@ if( ar.gum.chk*arch.gum.chk!=0 && delete.n>1 ){
 
     #paths:
     for(i in 1:n.paths){
+
+      #print path if verbose:
+      if(verbose){
+        print(paste("Searching path no. ", i, " out of ", n.paths, sep=""),
+        quote=FALSE)
+      }
 
       #prepare single-path search:
       path <- insig.regs[i]
@@ -577,6 +584,8 @@ if(verbose){
     if(best.spec[1]==0){
       resids <- yadj
       specific.mean <- "spec2 (empty)"
+      #R-squared:
+      if(verbose){ Rsquared <- 0 }
     }else{
 
       #estimate specific:
@@ -590,6 +599,12 @@ if(verbose){
       d.f. <- yadj.n - mXadj.k
       sumResids2 <- sum(resids2)
       sigma2 <- sumResids2/d.f.
+      #R-squared:
+      if(verbose){
+        TSS <- sum( (yadj - mean(yadj))^2 )
+        RSS <- sum( (resids - mean(resids))^2 )
+        Rsquared <- 1 - RSS/TSS
+      }
 
       #estimate s.e.; compute t-stats. and p-vals.:
       if(varcov.mat == "ordinary"){
@@ -612,13 +627,13 @@ if(verbose){
       colnames(specific.mean) <- c("reg", "coef", "s.e.", "t-stat", "p-val")
       rownames(specific.mean) <- colnames(mXunadj)[specific.mean[,1]] #NULL
 
-    } #end if..else{..}
+    } #end if(best.spec[1]==0)else{..}
 
     #make standardised residuals {z_hat}:
     if(var.spec.chk){
-      est.var <- sm(resids, mc=NULL, arch=arch, asym=asym, log.ewma=log.ewma,
-        vx=vx, p=p, zero.adj=zero.adj, vc.adj=vc.adj, tol=tol,
-        LAPACK=LAPACK, verbose=FALSE)
+      est.var <- sm(resids, mc=NULL, arch=arch, asym=asym,
+        log.ewma=log.ewma, vx=vx, p=p, zero.adj=zero.adj,
+        vc.adj=vc.adj, tol=tol, LAPACK=LAPACK, verbose=FALSE)
       specific.variance <- cbind(est.var$variance.results)
       zhat <- est.var$resids.std
       zhat <- zoo(c(rep(NA, I(y.n-length(zhat))), zhat), order.by=zoo.index.y)
@@ -640,11 +655,15 @@ if(verbose){
 
     #make diagnostics table:
     if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
-      specific.diagnostics <- matrix(NA, 2, 3)
+      #specific.diagnostics <- matrix(NA, 2, 3)
+      specific.diagnostics <- matrix(NA, 3, 3)
       colnames(specific.diagnostics) <- c("Chi^2", "df", "p-val")
+#      rownames(specific.diagnostics) <- c(paste("Ljung-Box AR(", ar.LjungB[1],
+#        ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
+#        sep=""))
       rownames(specific.diagnostics) <- c(paste("Ljung-Box AR(", ar.LjungB[1],
         ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
-        sep=""))
+        sep=""), "R-squared")
       if(!is.null(ar.LjungB)){
         ar.LjungBox <- Box.test(zhat, lag = ar.LjungB[1], type="L")
         specific.diagnostics[1,1] <- ar.LjungBox$statistic
@@ -657,6 +676,9 @@ if(verbose){
         specific.diagnostics[2,2] <- arch.LjungB[1]
         specific.diagnostics[2,3] <- arch.LjungBox$p.value
       }
+      ##R-squared:
+      specific.diagnostics[3,1] <- Rsquared
+
     } #end make diagnostics table
   } #end if(!is.null(spec.results))
 } #end if(verbose)
@@ -665,6 +687,7 @@ if(verbose){
 
 out$keep <- keep
 out$insigs.in.gum <- insig.regs
+#out$smpl <- c(t1,t2)
 
 if((ar.gum.chk*arch.gum.chk) != 0){
   if(verbose){ if(length(paths)==0){out$paths <- NULL}else{out$paths <- paths} }
@@ -682,8 +705,7 @@ if((ar.gum.chk*arch.gum.chk) != 0){
 if(length(warnings) > 0){
   out$warnings <- warnings
 }
+if(alarm){alarm()}
 
 return(out)
-
-} #end gets.mean
-
+}

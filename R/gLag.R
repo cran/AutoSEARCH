@@ -7,5 +7,4 @@ if(is.zoo(y)){
   out <- zoo(out, order.by=y.index)
 }
 return(out)
-} #end glag
-
+}

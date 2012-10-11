@@ -18,5 +18,4 @@ out$df <- 2
 out$p.value <- pval
 
 return(out)
-} #end jb.test
-
+}

@@ -9,5 +9,4 @@ out$xty <- crossprod(x,y)
 out$coefficients <- as.vector(out$xtxinv%*%out$xty)
 
 return(out)
-} #end ols.fit2
-
+}

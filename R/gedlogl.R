@@ -16,5 +16,4 @@ term2 <- sum(abszp)*(G3p/G1p)^(p/2)
 
 #return logl:
 return(as.vector(term1 - term2))
-} ##end gedlogl
-
+}
