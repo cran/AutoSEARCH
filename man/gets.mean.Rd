@@ -1,11 +1,10 @@
 \name{gets.mean}
 \alias{gets.mean}
+\alias{gets.vol}
 
-\title{
-General-to-Specific (GETS) model selection of the mean specification
-}
+\title{General-to-Specific (GETS) Model Selection of an AR-X model with log-ARCH-X errors}
 \description{
-The starting model is referred to as the General Unrestricted Model (GUM), and may contain both a mean specification and a log-volatility specification. However, simplification is undertaken only with respect to the former. The diagnostic tests are optionally undertaken either on the residuals of the mean specification or on the standardised residuals. The latter might be desirable if a log-volatility specification is specified.
+The starting model is referred to as the General Unrestricted Model (GUM). The \code{gets.mean} function undertakes multi-path GETS model selection of the mean specification, whereas \code{gets.vol} does the same for the log-variance specification.
 }
 \usage{
 gets.mean(y, mc = NULL, ar = NULL, ewma = NULL, mx = NULL,
@@ -18,9 +17,20 @@ gets.mean(y, mc = NULL, ar = NULL, ewma = NULL, mx = NULL,
   include.empty = FALSE, zero.adj = 0.1, vc.adj = TRUE,
   tol = 1e-07, LAPACK = FALSE, max.regs = 1000,
   verbose = TRUE, smpl = NULL, alarm = FALSE)
+gets.vol(e, arch=NULL, asym=NULL, log.ewma=NULL, vx=NULL,
+  p=2, keep=c(1), t.pval=0.05, wald.pval=0.05, do.pet=TRUE,
+  ar.LjungB=c(1, 0.025), arch.LjungB=c(1, 0.025), tau=2,
+  info.method=c("sc", "aic", "hq"),
+  info.resids=c("standardised", "log-sigma"), include.empty=FALSE,
+  zero.adj=0.1, vc.adj=TRUE, tol=1e-07, LAPACK=FALSE, max.regs=1000,
+  verbose=TRUE, alarm=FALSE, smpl=NULL)
+
 }
 \arguments{
   \item{y}{
+numeric vector, time-series or zoo object. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
+}
+  \item{e}{
 numeric vector, time-series or zoo object. Note that missing values in the beginning or at the end of the series is allowed, as they are removed with the na.trim command from the zoo package
 }
   \item{mc}{
@@ -114,12 +124,15 @@ See Sucarrat and Escribano (2012)
 }
 
 \value{
-Returns a list with the following elements:
+A list with a subset of the following:
+  \item{volatility.fit}{zoo-object with the fitted values of the volatility (sigma^p) of the final log-volatility specification}
+  \item{resids.ustar}{zoo-object with the residuals of the AR-representation of the final log-volatility specification}
   \item{resids}{zoo-object with the residuals of the final mean specification}
   \item{resids.std}{zoo-object with the standardised residuals}
   \item{Elogzp}{estimate of E[log(z^p)]}
   \item{call}{the function call}
   \item{gum.mean}{a data frame with the estimation results of the GUM}
+  \item{gum.volatility}{a data frame with the estimation results of the log-volatility GUM}
   \item{gum.diagnostics}{data frame with selected diagnostics of the GUM}
   \item{keep}{if any, the regressors that are excluded from deletion}
   \item{insigs.in.gum}{a numeric integer vector with the insignificant regressors of the GUM}
@@ -127,25 +140,23 @@ Returns a list with the following elements:
   \item{terminals}{the distinct terminal models}
   \item{terminals.results}{the value and type of the information criterion (info) used in selecting among terminal specifications, and the number of observations (T) and parameters (k) used in the calculation of the information criterion}
   \item{specific.mean}{data frame with the estimation results of the final mean specification}
+  \item{specific.volatility}{data frame with the estimation results of the final log-volatility specification}
   \item{specific.diagnostics}{data frame with selected diagnostics of the standardised residuals}
 }
 
 \references{
-Genaro Sucarrat and Alvaro Escribano (2012): 'Automated Financial
-  Model Selection: General-to-Specific Modelling of the Mean and
-  Volatility Specifications', Oxford Bulletin of Economics and
-  Statistics 74, Issue no. 5 (October), pp. 716-735
+Genaro Sucarrat and Alvaro Escribano (2012): 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility Specifications', Oxford Bulletin of Economics and Statistics 74, Issue no. 5 (October), pp. 716-735
 
-G. Ljung and G. Box (1979): 'On a Measure of Lack of Fit in Time
-  Series Models'. Biometrika 66, pp. 265-270
+G. Ljung and G. Box (1979): 'On a Measure of Lack of Fit in Time Series Models'. Biometrika 66, pp. 265-270
 }
-\author{
-Genaro Sucarrat (http://www.sucarrat.net/)
-}
+
+\author{Genaro Sucarrat (http://www.sucarrat.net/)}
 
 \seealso{
-sm, gets.vol, ewma
+\code{AutoSEARCH} package: \code{\link{sm}} \cr
+\code{\link{gets}} package: \code{\link{arx}}, \code{\link{getsm}}, \code{\link{getsv}}
 }
+
 \examples{
 #Generate AR(1) model and four independent normal regressors:
 set.seed(123)
@@ -176,4 +187,38 @@ mymodel <- gets.mean(y, mc=TRUE, ar=1:5, mx=xregs,
 #very liberal (i.e. 20 percent) significance levels (20 percent):
 mymodel <- gets.mean(y, mc=TRUE, ar=1:5, mx=xregs, t.pval=0.2,
   wald.pval=0.2)
+  
+#Generate iid normal residuals and a matrix of independent
+#normals:
+set.seed(123)
+e <- rnorm(200)
+xregs <- matrix(rnorm(4*200), 200, 4)
+
+#General-to-Specific model selection of log-volatility:
+mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2))
+
+#General-to-Specific model selection of log-volatility
+#with the log-ARCH(1) term excluded from removal:
+mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2), keep=2)
+
+#General-to-Specific model selection of log-volatility
+#with all the log-ARCH terms excluded from removal:
+mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2), asym=1:2,
+  log.ewma=list(length=5), keep=2:6)
+
+#If e is a daily (weekends excluded) financial return series,
+#then the following specification includes a lagged volatility
+#proxy both for the week (5-day average of squared return) and
+#for the month (20-day average of squared returns), in addition
+#to five log-ARCH terms:
+mymodel <- gets.vol(e, arch=1:5, log.ewma=list(length=c(5,20)) )
+
+#General-to-Specific model selection with very liberal
+#(20 percent) significance levels:
+mymodel <- gets.vol(e, arch=1:5, vx=log(xregs^2), t.pval=0.2,
+  wald.pval=0.2)
 }
+
+\keyword{Statistical Models}
+\keyword{Time Series}
+\keyword{Financial Econometrics}

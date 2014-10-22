@@ -2,38 +2,38 @@
 \alias{AutoSEARCH-package}
 \alias{AutoSEARCH}
 \docType{package}
-\title{
-General-to-Specific (GETS) Model selection
-}
+\title{General-to-Specific (GETS) Model selection}
+
 \description{
-Automated multi-path General-to-Specific (GETS) model selection of the mean and log-volatility specification of a log-ARCH-X model.
+Automated multi-path GETS model selection of either an AR-X model with log-ARCH-X errors, or of a log-ARCH-X model of the error.
 
-The three main functions of the package are sm, gets.mean and gets.vol. sm estimates a model with an AR-X specification in the mean and a log-ARCH-X log-volatility specification. gets.mean undertakes General-to-Specific model selection of the mean specification, whereas gets.vol undertakes General-to-Specific model selection of the log-volatility specification.
-
-The package also provides twelve auxiliary functions that are called by sm, gets.mean and gets.vol. They are documentated very scarcely.
+NOTE: The package has been succeeded by the package \code{\link{gets}}, also available on the CRAN, which is intended to be more user-friendly, faster and easier to extend. \code{AutoSEARCH} will continue to be maintained, but the development focus will switch to \code{gets}. Users are therefore encouraged to consider \code{gets} instead.
 }
+
 \details{
 \tabular{ll}{
 Package: \tab AutoSEARCH\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2012-10-11\cr
+Version: \tab 1.3\cr
+Date: \tab 2014-10-22\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
-The code was developed in relation with the project G. Sucarrat and A. Escribano (2012): 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility
-Specifications', Oxford Bulletin of Economics and Statistics 74, Issue 5 (October), pp. 716-735. The model class in which model selection takes place is
-called SEARCH, which is an abreviation of Stochastic Exponential ARCH. The acronym SEARCH also conveniently connotates the main motivation
-behind the model, namely that it is particularly suitable for specification SEARCH.
+The code was originally developed in relation with G. Sucarrat and A. Escribano (2012): 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility
+Specifications', Oxford Bulletin of Economics and Statistics 74, Issue 5 (October), pp. 716-735.
 }
-\author{
-Genaro Sucarrat
-Maintainer: Genaro Sucarrat <genaro.sucarrat@bi.no>
-}
+
+\author{Genaro Sucarrat, \url{http://www.sucarrat.net/}}
+
 \references{
-G. Sucarrat and A. Escribano (2012): 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility
-Specifications', Oxford Bulletin of Economics and Statistics 74, Issue 5 (October), pp. 716-735
+G. Sucarrat and A. Escribano (2012): 'Automated Financial Model Selection: General-to-Specific Modelling of the Mean and Volatility Specifications', Oxford Bulletin of Economics and Statistics 74, Issue 5 (October), pp. 716-735
 }
+
+\seealso{
+\code{AutoSEARCH} package: \code{\link{sm}}, \code{\link{gets.mean}}, \code{\link{gets.vol}} \cr
+\code{\link{gets}} package: \code{\link{arx}}, \code{\link{getsm}}, \code{\link{getsv}}
+}
+
 \examples{
 #Generate from AR(1) model:
 set.seed(123)

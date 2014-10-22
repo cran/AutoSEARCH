@@ -1,12 +1,9 @@
 \name{regs.vol.sm}
 \alias{regs.vol.sm}
 
-\title{
-Creates the regressors of the log-volatility specification
-}
-\description{
-Creates the regressors of the log-volatility specification
-}
+\title{Create the regressors of a log-ARCH-X model}
+
+\description{Creates the regressors of a log-ARCH-X model, see \code{\link{sm}} and \code{\link{gets.vol}}}
 
 \usage{
 regs.vol.sm(e, vc=TRUE, arch=NULL, asym=NULL, log.ewma=NULL, vx=NULL, p=2,
@@ -61,5 +58,11 @@ Genaro Sucarrat (http://www.sucarrat.net/)
 }
 
 \seealso{
-regs.mean.sm
+\code{AutoSEARCH} package: \code{\link{sm}}, \code{\link{regs.mean.sm}} \cr
+\code{\link{gets}} package: \code{\link{regs.mean}}, \code{\link{regs.var}}
+
 }
+
+\keyword{Statistical Models}
+\keyword{Time Series}
+\keyword{Financial Econometrics}

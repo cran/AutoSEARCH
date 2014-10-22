@@ -1,11 +1,11 @@
 \name{sm}
 \alias{sm}
 
-\title{
-Estimates a SEARCH model, that is, a model with an AR-X mean specification and a log-ARCH-X log-volatility specification
-}
+\title{Estimate an AR-X model with log-ARCH-X errors}
 \description{
-Estimates a SEARCH model by means of OLS. Estimation takes place in two steps. First the mean specification, then the log-volatility specification where the natural logarithm of the residuals constitutes the regressand. The mean specification can contain an intercept, AR-terms, lagged moving averages of the regressand and other conditioning covariates. The log-volatility specification can contain log-ARCH terms, asymmetry or 'leverage' terms, log(EqWMA) where EqWMA is a lagged equally weighted moving average of past pth. exponentiated residuals (a volatility proxy) and other conditioning covariates.
+Estimation is by OLS in two steps. In the first the AR-X mean specification is estimated, whereas in the second step the residuals from the first are used to fit a log-ARCH-X model to the log-variance. The natural logarithm of the squared residuals constitutes the regressand in the second step.
+
+The AR-X mean specification can contain an intercept, AR-terms, lagged moving averages of the regressand and other conditioning covariates ('X'). The log-variance specification can contain log-ARCH terms, asymmetry or 'leverage' terms, log(EqWMA) where EqWMA is a lagged equally weighted moving average of past squared residuals (a volatility proxy) and other conditioning covariates ('X').
 }
 \usage{
 sm(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL, arch=NULL, asym=NULL,
@@ -74,7 +74,7 @@ Either NULL (default; the whole sample is used for estimation) or a two-element 
 See Sucarrat and Escribano (2012)
 }
 \value{
-Returns a list with the following elements:
+A list with the following elements:
   \item{call}{the function call}
   \item{mean.fit}{zoo-object with the fitted values of the mean specification}
   \item{resids}{zoo-object with the residuals of the mean specification}
@@ -96,7 +96,8 @@ Genaro Sucarrat (http://www.sucarrat.net/)
 }
 
 \seealso{
-gets.mean, gets.vol, ewma
+\code{AutoSEARCH} package: \code{\link{gets.mean}}, \code{\link{gets.vol}} \cr
+\code{\link{gets}} package: \code{\link{arx}}, \code{\link{getsm}}, \code{\link{getsv}}
 }
 \examples{
 #Generate AR(1) model and independent normal regressors:
@@ -133,3 +134,7 @@ sm(y, arch=1:4, asym=1, log.ewma=list(length=30), vx=log(xregs^2))
 sm(y, mc=TRUE, ar=1:2, mx=xregs, arch=1:4, asym=1,
   log.ewma=list(length=30), vx=log(xregs^2))
 }
+
+\keyword{Statistical Models}
+\keyword{Time Series}
+\keyword{Financial Econometrics}

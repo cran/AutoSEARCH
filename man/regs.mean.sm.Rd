@@ -1,12 +1,9 @@
 \name{regs.mean.sm}
 \alias{regs.mean.sm}
 
-\title{
-Creates the regressors of the mean specification of a SEARCH model
-}
-\description{
-Creates the regressors of the mean specification of a SEARCH model
-}
+\title{Create the regressors of an AR-X model}
+
+\description{Creates the regressors of an AR-X model, see \code{\link{sm}}. }
 
 \usage{
 regs.mean.sm(y, mc=NULL, ar=NULL, ewma=NULL, mx=NULL)
@@ -40,10 +37,13 @@ package
 Matrix with regressors
 }
 
-\author{
-Genaro Sucarrat (http://www.sucarrat.net/)
-}
+\author{Genaro Sucarrat (http://www.sucarrat.net/)}
 
 \seealso{
-regs.vol.sm
+\code{AutoSEARCH} package: \code{\link{sm}}, \code{\link{regs.vol.sm}} \cr
+\code{\link{gets}} package: \code{\link{regs.mean}}, \code{\link{regs.var}}
 }
+
+\keyword{Statistical Models}
+\keyword{Time Series}
+\keyword{Financial Econometrics}

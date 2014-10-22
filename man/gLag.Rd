@@ -5,10 +5,7 @@
 Lag a series
 }
 \description{
-Convenience function particularly suited for the lagging of zoo objects.
-By default the 'lost' values are padde with NAs so that the length of
-the series is retained. This is useful in creating the regressor
-matrices for the GETS model selection
+A wrapper to the \code{\link{glag}} function in the \code{\link{lgarch}} package.
 }
 \usage{
 gLag(y, k=1, na.value=NA)
@@ -30,3 +27,10 @@ the lagged vector, time series or zoo object
 \author{
 Genaro Sucarrat (http://www.sucarrat.net/)
 }
+\seealso{
+\code{\link{glag}}
+}
+
+\keyword{Statistical Models}
+\keyword{Time Series}
+\keyword{Financial Econometrics}

@@ -1,14 +1,16 @@
 \name{ols.fit1}
 \alias{ols.fit1}
+\alias{ols.fit2}
 
 \title{
 Fast and accurate OLS estimation by means of QR decomposition
 }
 \description{
-Fast and accurate OLS estimation by means of QR decomposition
+ols.fit1 and ols.fit2 are auxiliary functions called by \code{\link{sm}}, \code{\link{gets.mean}} and \code{\link{gets.vol}}. The ols.fit2 function returns slightly more information than ols.fit1, which makes the latter faster. However, variance-covariance are to be needed in a second step, then ols.fit2 is faster due to the additional information provided by it.
 }
 \usage{
 ols.fit1(y, x, tol=1e-07, LAPACK=FALSE)
+ols.fit2(y, x, tol=1e-07, LAPACK=FALSE)
 }
 \arguments{
   \item{y}{
@@ -29,11 +31,14 @@ LINPACK (see qr() function)
 }
 
 \value{
-Returns a list with the following elements:
+A list that contains some or all of the following elements:
   \item{qr}{}
   \item{rank}{}
   \item{qraux}{}
   \item{pivot}{}
+  \item{xtxinv}{}
+  \item{xtx}{}
+  \item{xty}{}
   \item{coefficients}{}
 }
 
@@ -42,5 +47,9 @@ Genaro Sucarrat (http://www.sucarrat.net/)
 }
 
 \seealso{
-ols.fit2, qr, solve
+\code{\link{qr}}, \code{\link{solve}}, \code{\link{ols}}
 }
+
+\keyword{Statistical Models}
+\keyword{Time Series}
+\keyword{Financial Econometrics}
