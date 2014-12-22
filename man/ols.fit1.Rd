@@ -47,7 +47,7 @@ Genaro Sucarrat (http://www.sucarrat.net/)
 }
 
 \seealso{
-\code{\link{qr}}, \code{\link{solve}}, \code{\link{ols}}
+\code{\link{qr}}, \code{\link{solve}}
 }
 
 \keyword{Statistical Models}

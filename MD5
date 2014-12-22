@@ -1,6 +1,6 @@
-44f997ca030ac718886bd7f6ad1caad5 *DESCRIPTION
+f8ac3f630e59f324d700805cf8687c2e *DESCRIPTION
 8af7588d9cbe0a96af110d9d635e4428 *NAMESPACE
-383a5bd9ea824fa96afaaff52e4911c0 *NEWS
+e30acae6f6de5a3468bb350949409af5 *NEWS
 411230a8552b46f78c43adbca6c3c666 *R/AutoSEARCH-internal.R
 84a646504b9ce2cd3e13be0861821ceb *R/gLag.R
 cd861c40b5f689e0dcc83f38abcdc639 *R/gLog.ep.R
@@ -13,12 +13,12 @@ d16c1f8efefb526f7e138fbb5ad031ee *R/ols.fit1.R
 816811645903b0e6b0dc2721494e3de9 *R/regs.mean.sm.R
 87ac10c9b39c52ba1ecc59007ac4d103 *R/regs.vol.sm.R
 212d95611d81f2b41bb06f467c0c4175 *R/sm.R
-74ef700fa3db635f59d301e9977fafac *man/AutoSEARCH-package.Rd
+bec8b0ff2530ba7c012908a042377bfa *man/AutoSEARCH-package.Rd
 75337f54b932fa4e513784f7fa2ec48c *man/gLag.Rd
 92f3ec30610330815166c9a00b971655 *man/gLog.ep.Rd
 a859eb29a618c895d0f30dc4e680374d *man/gedestp.Rd
 616465f12409cbc80ed1224d94c1420f *man/gets.mean.Rd
-5dd4f939aa7bb4845f9d7b81f6ff34d2 *man/ols.fit1.Rd
-0b1bc095926629a17b374af0b072dc25 *man/regs.mean.sm.Rd
-0681c78b1f2d3ec410a1c52e128331bb *man/regs.vol.sm.Rd
+01e5d21f9aa08370188781affcdb2ad9 *man/ols.fit1.Rd
+1c0bd37ab7695cbd50ef72345b271279 *man/regs.mean.sm.Rd
+6ce8b2ea67fc8a6070dd661e641b66d3 *man/regs.vol.sm.Rd
 c13b3979921a00cf8cce0d9d47700692 *man/sm.Rd

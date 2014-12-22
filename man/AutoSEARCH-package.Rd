@@ -14,8 +14,8 @@ NOTE: The package has been succeeded by the package \code{\link{gets}}, also ava
 \tabular{ll}{
 Package: \tab AutoSEARCH\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2014-10-22\cr
+Version: \tab 1.4\cr
+Date: \tab 2014-12-22\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }

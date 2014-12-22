@@ -41,7 +41,6 @@ Matrix with regressors
 
 \seealso{
 \code{AutoSEARCH} package: \code{\link{sm}}, \code{\link{regs.vol.sm}} \cr
-\code{\link{gets}} package: \code{\link{regs.mean}}, \code{\link{regs.var}}
 }
 
 \keyword{Statistical Models}
