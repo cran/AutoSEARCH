@@ -111,7 +111,6 @@ sigma2adj <- exp(fit + vconstadj)
 zhat <- eadj/sqrt(sigma2adj)
 
 #make diagnostics table:
-#if(!is.null(ar.LjungB) || !is.null(arch.LjungB)){
   if(verbose == TRUE){
     diagnostics <- matrix(NA, 2, 2)
     colnames(diagnostics) <- c("stat", "p-val")
@@ -119,7 +118,6 @@ zhat <- eadj/sqrt(sigma2adj)
       ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
       sep=""))
   }
-#}
 
 #Ljung-Box test for serial correlation in {z_t}:
 if(!is.null(ar.LjungB)){
@@ -177,9 +175,6 @@ if((ar.gum.chk*arch.gum.chk) != 0){
     logl <- gedlogl(zhat, p = phat)
     info.results <- info.criterion(logl, T, mXadj.k, method=info.method)
   }
-#  spec.results <- rbind(c(NA,NA,NA,info.results$value))
-#  col.labels <- c("wald-stat", "df", "p-val", paste("info(", info.method, ")", sep=""))
-#  row.labels <- c("spec1 (gum)")
   spec.results <- rbind( c(info.results$value, info.results$n, info.results$k) )
   col.labels <- c(paste("info(", info.method, ")", sep=""), "T", "k")
   row.labels <- c("spec1 (gum)")
@@ -259,25 +254,10 @@ if( ar.gum.chk*arch.gum.chk!=0 && delete.n>0 && include.empty==TRUE
       info.results <- info.criterion(logl, T, keep.n, method=info.method)
     }
 
-    #compute wald-test:
-#    if(do.pet){
-#      mR <- NULL
-#      for(k in 1:gum.n){
-#        if(gum.regs[k] %in% delete){
-#          mR <- rbind(mR, c(rep(0,I(k-1)), 1, rep(0, I(gum.n-k) )))
-#        }
-#      }
-#      mRestq <- mR%*%cbind(gum.coefs)
-#      wald.stat <- t(mRestq)%*%qr.solve(mR%*%gum.varcovmat%*%t(mR), tol=tol)%*%mRestq
-#      pet.chk <- as.logical(wald.pval < pchisq(wald.stat, delete.n, lower.tail = FALSE))
-#    }else{pet.chk <- TRUE} #end if(do.pet)
-
     #check pet result:
-#    if(pet.chk){
       spec.results <- rbind(spec.results, c(info.results$value,
         info.results$n, info.results$k))
       row.labels <- c(row.labels, paste("spec", length(spec), " (empty)", sep=""))
-#    }else{warnings <- c(warnings, c("Empty model fails PET against VGUM"))}
 
   }else{
     warnings <- c(warnings, c("Empty volatility model does not pass one or more diagnostic checks"))
@@ -477,22 +457,6 @@ if( ar.gum.chk*arch.gum.chk!=0 && delete.n>1 ){
             method=info.method)
         } #end specification results
 
-#        #compute wald-test:
-#        deleted <- setdiff(gum, spec.adj)
-#        n.deleted <- length(deleted)
-#        mR <- NULL
-#        for(k in 1:gum.n){
-#          if(gum.regs[k] %in% deleted){
-#            mR <- rbind(mR, c(rep(0,I(k-1)), 1, rep(0, I(gum.n-k) )))
-#          }
-#        }
-#        mRestq <- mR%*%cbind(gum.coefs)
-#        wald.stat <- t(mRestq)%*%qr.solve(mR%*%gum.varcovmat%*%t(mR), tol=tol)%*%mRestq
-#        spec.results <- rbind(spec.results, c(wald.stat, n.deleted,
-#          pchisq(wald.stat, n.deleted, lower.tail = FALSE)
-#          ,info.results$value))
-#        row.labels <- c(row.labels, paste("spec", length(spec), sep=""))
-
         #add terminal to spec:
         spec.results <- rbind(spec.results, c(info.results$value,
           info.results$n, info.results$k))
@@ -537,40 +501,6 @@ if(verbose){
     min.models <- min(models[,2])
     wheres <- which(models[,2]==min.models)
     if(length(wheres)>1){warnings <- c(warnings, "Several terminal specifications attain the minimum information criterion")}
-
-#    for(j in 1:length(J)){
-#      where <- which.min(models[,5])
-#
-#      #check for several minimums:
-#      min.models <- min(models[,5])
-#      wheres <- which(models[,5]==min.models)
-#      if(length(wheres)>1){warnings <- c(warnings, "Several terminal specifications attain the minimum information criterion")}
-#
-#      if(where==1){
-#        winner <- 1 ##gum
-#        break
-#      }
-#      if(where > 1){
-#
-#        if(is.null(wald.pval)){
-#          winner <- models[where,1]
-#          break
-#        }
-#
-#        if(!is.null(wald.pval)){
-#          chk.wald <- models[where,4] > wald.pval
-#          if(chk.wald){
-#            winner <- models[where,1]
-#            break
-#          }else{
-#            models <- rbind(models[-where,])
-#          }
-#        }
-#
-#      }
-#    }
-#    #best specification:
-#    best.spec <- spec[[winner]]
 
   } #end if(!is.null(spec.results))
 } #end if(verbose)

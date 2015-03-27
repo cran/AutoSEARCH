@@ -58,7 +58,7 @@ Genaro Sucarrat (http://www.sucarrat.net/)
 }
 
 \seealso{
-\code{AutoSEARCH} package: \code{\link{sm}}, \code{\link{regs.mean.sm}} \cr
+\code{\link{sm}}, \code{\link{regs.mean.sm}} \cr
 }
 
 \keyword{Statistical Models}

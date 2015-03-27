@@ -2,7 +2,7 @@
 \alias{gets.mean}
 \alias{gets.vol}
 
-\title{General-to-Specific (GETS) Model Selection of an AR-X model with log-ARCH-X errors}
+\title{General-to-Specific (GETS) Modelling of an AR-X model with log-ARCH-X errors}
 \description{
 The starting model is referred to as the General Unrestricted Model (GUM). The \code{gets.mean} function undertakes multi-path GETS model selection of the mean specification, whereas \code{gets.vol} does the same for the log-variance specification.
 }
@@ -154,7 +154,7 @@ G. Ljung and G. Box (1979): 'On a Measure of Lack of Fit in Time Series Models'.
 
 \seealso{
 \code{AutoSEARCH} package: \code{\link{sm}} \cr
-\code{\link{gets}} package: \code{\link{arx}}, \code{\link{getsm}}, \code{\link{getsv}}
+\code{gets} package: \code{arx}, \code{getsm}, \code{getsv}, \code{isat}
 }
 
 \examples{

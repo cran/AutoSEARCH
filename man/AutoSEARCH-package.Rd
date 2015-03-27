@@ -2,20 +2,20 @@
 \alias{AutoSEARCH-package}
 \alias{AutoSEARCH}
 \docType{package}
-\title{General-to-Specific (GETS) Model selection}
+\title{General-to-Specific (GETS) Modelling}
 
 \description{
-Automated multi-path GETS model selection of either an AR-X model with log-ARCH-X errors, or of a log-ARCH-X model of the error.
+GETS modelling of the mean and variance of a regression.
 
-NOTE: The package has been succeeded by the package \code{\link{gets}}, also available on the CRAN, which is intended to be more user-friendly, faster and easier to extend. \code{AutoSEARCH} will continue to be maintained, but the development focus will switch to \code{gets}. Users are therefore encouraged to consider \code{gets} instead.
+NOTE: The package has been succeeded by the package \code{gets}, also available on the CRAN, which is more user-friendly, faster and easier to extend. The development focus has switched to \code{gets}, so users are therefore encouraged to consider \code{gets} instead.
 }
 
 \details{
 \tabular{ll}{
 Package: \tab AutoSEARCH\cr
 Type: \tab Package\cr
-Version: \tab 1.4\cr
-Date: \tab 2014-12-22\cr
+Version: \tab 1.5\cr
+Date: \tab 2015-03-27\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -31,7 +31,7 @@ G. Sucarrat and A. Escribano (2012): 'Automated Financial Model Selection: Gener
 
 \seealso{
 \code{AutoSEARCH} package: \code{\link{sm}}, \code{\link{gets.mean}}, \code{\link{gets.vol}} \cr
-\code{\link{gets}} package: \code{\link{arx}}, \code{\link{getsm}}, \code{\link{getsv}}
+\code{gets} package: \code{arx}, \code{getsm}, \code{getsv}, \code{isat}
 }
 
 \examples{

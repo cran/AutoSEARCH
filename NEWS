@@ -1,3 +1,8 @@
+Version 1.5 (27 March 2015):
+============================
+
+Several functions added (together with their documentation) to accommodate a break in dependency on the gets-package
+
 Version 1.4 (22 October 2014):
 ==============================
 
@@ -6,7 +11,7 @@ Stylistic changes to manuals (required by CRAN)
 Version 1.3 (22 October 2014):
 ==============================
 
-The changes in this version is mainly to accommodate the creation of the successor of AutoSEARCH: gets (also available on the CRAN). The gets package is based on code from AutoSEARCH, but is intended to be more user-friendly, faster and easier to extend. AutoSEARCH will continue to be maintained, but the development focus will switch to gets.
+The changes in this version is mainly to accommodate the creation of the successor of AutoSEARCH: gets (also available on the CRAN). The gets package is based on code from AutoSEARCH, but is more user-friendly, faster and easier to extend. AutoSEARCH will continue to be maintained, but the development focus will switch to gets.
 
 The main changes to AutoSEARCH are:
 

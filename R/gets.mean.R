@@ -290,24 +290,11 @@ if( ar.gum.chk*arch.gum.chk!=0 && delete.n>0 && include.empty==TRUE ){
     }
 
     #compute wald-test:
-#    if(do.pet){
-#      mR <- NULL
-#      for(k in 1:gum.n){
-#        if(gum.regs[k] %in% delete){
-#          mR <- rbind(mR, c(rep(0,I(k-1)), 1, rep(0, I(gum.n-k) )))
-#        }
-#      }
-#      mRestq <- mR%*%cbind(gum.coefs)
-#      wald.stat <- t(mRestq)%*%qr.solve(mR%*%gum.varcovmat%*%t(mR), tol=tol)%*%mRestq
-#      pet.chk <- as.logical(wald.pval < pchisq(wald.stat, delete.n, lower.tail = FALSE))
-#    }else{pet.chk <- TRUE} #end if(do.pet)
 
     #check pet result:
-#    if(pet.chk){
       spec.results <- rbind(spec.results, c(info.results$value,
         info.results$n, info.results$k))
       row.labels <- c(row.labels, paste("spec", length(spec), " (empty)", sep=""))
-#    }else{warnings <- c(warnings, c("Empty model fails PET against MGUM"))}
 
   }else{
     warnings <- c(warnings, c("Empty mean model does not pass one or more diagnostic checks"))
@@ -437,8 +424,6 @@ if( ar.gum.chk*arch.gum.chk!=0 && delete.n>1 ){
             if(varcov.mat == "ordinary"){
               coef.var <-as.vector(sigma2*diag(est$xtxinv))
               s.e. <- sqrt(coef.var)
-#              varcovmat <- sigma2*est$xtxinv
-#              s.e. <- as.vector(sqrt(diag(varcovmat)))
             } #end "ordinary"
 
             if(varcov.mat == "white"){
@@ -658,9 +643,6 @@ if(verbose){
       #specific.diagnostics <- matrix(NA, 2, 3)
       specific.diagnostics <- matrix(NA, 3, 3)
       colnames(specific.diagnostics) <- c("Chi^2", "df", "p-val")
-#      rownames(specific.diagnostics) <- c(paste("Ljung-Box AR(", ar.LjungB[1],
-#        ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
-#        sep=""))
       rownames(specific.diagnostics) <- c(paste("Ljung-Box AR(", ar.LjungB[1],
         ")", sep=""), paste("Ljung-Box ARCH(", arch.LjungB[1], ")",
         sep=""), "R-squared")

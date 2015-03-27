@@ -1,9 +1,9 @@
 \name{sm}
 \alias{sm}
 
-\title{Estimate an AR-X model with log-ARCH-X errors}
+\title{Estimate an AR-X Model with Log-ARCH-X Errors}
 \description{
-Estimation is by OLS in two steps. In the first the AR-X mean specification is estimated, whereas in the second step the residuals from the first are used to fit a log-ARCH-X model to the log-variance. The natural logarithm of the squared residuals constitutes the regressand in the second step.
+Estimation is by OLS in two stages. In the first the AR-X mean specification is estimated, whereas in the second stage the residuals from the first are used to fit a log-ARCH-X model to the log-variance. The natural logarithm of the squared residuals constitutes the regressand in the second step.
 
 The AR-X mean specification can contain an intercept, AR-terms, lagged moving averages of the regressand and other conditioning covariates ('X'). The log-variance specification can contain log-ARCH terms, asymmetry or 'leverage' terms, log(EqWMA) where EqWMA is a lagged equally weighted moving average of past squared residuals (a volatility proxy) and other conditioning covariates ('X').
 }
@@ -97,7 +97,7 @@ Genaro Sucarrat (http://www.sucarrat.net/)
 
 \seealso{
 \code{AutoSEARCH} package: \code{\link{gets.mean}}, \code{\link{gets.vol}} \cr
-\code{\link{gets}} package: \code{\link{arx}}, \code{\link{getsm}}, \code{\link{getsv}}
+\code{gets} package: \code{arx}, \code{getsm}, \code{getsv}, \code{isat}
 }
 \examples{
 #Generate AR(1) model and independent normal regressors:

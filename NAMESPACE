@@ -1,2 +1,2 @@
-import(zoo,lgarch,gets)
-export("gedestp", "gedlogl", "gets.mean", "gets.vol", "gLag", "gLog.ep", "ols.fit1", "ols.fit2", "regs.mean.sm", "regs.vol.sm", "sm")
+import(zoo,lgarch)
+export("eqwma", "gedestp", "gedlogl", "gets.mean", "gets.vol", "gLag", "gLog.ep", "info.criterion", "jb.test", "leqwma", "ols.fit1", "ols.fit2", "regs.mean.sm", "regs.vol.sm", "sm")
